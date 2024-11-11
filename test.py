@@ -4,14 +4,25 @@ import os
 from os import path
 import getopt,sys
 
-import_map = {}
-
-# Options
+#### SCRIPT PARAMETERS
 options = "r:"
 run_options = ["network", "ipam", "resolved_rules","hosted_zones","all"]
 long_options = ["run_option="]
+chosen_option = "all"
 
-chosen_option = ""
+#### MAIN IDENTIFIER
+irt = "a2742"
+trigram = "sbx"
+env = "hml"
+main_identifier = irt.upper() + "_" + trigram.upper() + "_" + env.upper
+
+
+##### - NETWORK STATIC VARIABLES
+vpc_name = main_identifier + "VPC"
+##### - IPAM STATIC VARIABLES
+##### - RESOLVER RULES STATIC VARIABLES
+##### - HOSTED_ZONES STATIC VARIABLES
+
 def import_network_resources():
     # This function will list import network resources
     print("--- Function import_network_resources ----")
@@ -46,10 +57,18 @@ def import_network_resources():
     for x in resources_not_found_list:
         print(x)
 
-def main(argv):
+def import_ipam_cidrs():
+    print("")
+def import_resolver_rules():
+    print("")
 
+def import_hosted_zones():
+    print()
+
+### MAIN 
+def main(argv):
     print ("--- Script INIT -- Checking Arguments ---")
-    # Parsing argument
+    # ----- Argument Parsing --- BEGINS
     try:
         arguments, values = getopt.getopt(argv, options, long_options)
     except getopt.GetoptError:
@@ -65,11 +84,37 @@ def main(argv):
             sys.exit() 
         elif currentArgument in ("-r", "--run_option"):
             chosen_option = currentValue
+    # ----- Argument Parsing --- ENDS
 
+    ## 
     print ("--- Script RUN START ---")
 
-    
-    
+    ## Choose profile
+
+    ## Choose Coretech
+
+    ## Load Functions based on INPUTS
+    if(chosen_option == "all"):
+        print("No run_option provider, the script will impact all resources")
+    else:
+        print("Chosen option for script:", chosen_option)
+        
+    match chosen_option:
+        case "network":
+            import_network_resources()
+        case "ipam":
+            import_ipam_cidrs()
+        case "resolver_rules":
+            import_resolver_rules()
+        case "hosted_zones":
+            import_hosted_zones()
+        case _:
+            import_network_resources()
+            import_ipam_cidrs()
+            import_resolver_rules()
+            import_hosted_zones()
+
+    print("--- Script RUN FINISHED ---")
 
 if __name__ == "__main__":
    main(sys.argv[1:])
